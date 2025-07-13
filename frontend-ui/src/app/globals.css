@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+@layer base {
+  :root {
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+
+    --popover: 224 71% 4%;
+    --popover-foreground: 213 31% 91%;
+
+    --primary: 262 84% 60%;
+    --primary-foreground: 213 31% 91%;
+
+    --secondary: 215 28% 17%;
+    --secondary-foreground: 213 31% 91%;
+
+    --muted: 215 28% 17%;
+    --muted-foreground: 215 25% 65%;
+
+    --accent: 215 28% 17%;
+    --accent-foreground: 213 31% 91%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 213 31% 91%;
+
+    --border: 215 28% 17%;
+    --input: 215 28% 17%;
+    --ring: 262 84% 60%;
+
+    --radius: 0.75rem;
+
+    --chart-1: hsl(180, 100%, 50%);
+    --chart-2: hsl(262, 84%, 60%);
+    --chart-3: hsl(45, 95%, 55%);
+    --chart-4: hsl(80, 60%, 50%);
+    --chart-5: hsl(0, 80%, 65%);
+  }
+
+  .dark {
+    --background: 224, 71%, 4%;
+    --foreground: 213, 31%, 91%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 262 84% 60%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 262 84% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.glow-shadow {
+  box-shadow: 0 0 15px theme('colors.purple.500'), 0 0 5px theme('colors.cyan.500');
+}
+
+@keyframes glow {
+  0% { filter: drop-shadow(0 0 0px #38bdf8); opacity: 0.7; }
+  50% { filter: drop-shadow(0 0 12px #f0abfc) drop-shadow(0 0 24px #38bdf8); opacity: 1; }
+  100% { filter: drop-shadow(0 0 0px #38bdf8); opacity: 0.7; }
+}
+
+.animate-glow {
+  animation: glow 1.2s infinite ease-in-out;
+}

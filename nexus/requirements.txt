@@ -1,0 +1,10 @@
+pandas
+sentence-transformers
+faiss-cpu
+openai
+neo4j
+streamlit
+python-dotenv
+matplotlib 
+fastapi
+uvicorn 
