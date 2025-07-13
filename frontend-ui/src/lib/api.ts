@@ -81,6 +81,27 @@ export interface ReturnsData {
   }>;
 }
 
+export interface ShipmentData {
+  shipment_id: string;
+  shipment_type: string;
+  created_at: string;
+  status: string;
+  priority: string;
+  sla_status: string;
+  sla_hours_remaining?: number;
+}
+
+export interface PriorityResponse {
+  shipments: ShipmentData[];
+  summary: {
+    total_shipments: number;
+    high_priority: number;
+    medium_priority: number;
+    sla_breached: number;
+    sla_nearing: number;
+  };
+}
+
 // API service functions
 export const apiService = {
   // AI Query
@@ -172,6 +193,17 @@ export const apiService = {
     
     if (!response.ok) {
       throw new Error(`Failed to fetch returns data: ${response.statusText}`);
+    }
+    
+    return response.json();
+  },
+
+  // Priority
+  async getPriorityData(): Promise<PriorityResponse> {
+    const response = await fetch(`${API_BASE_URL}/api/priority`);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch priority data: ${response.statusText}`);
     }
     
     return response.json();

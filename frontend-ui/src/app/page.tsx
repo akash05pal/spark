@@ -4,8 +4,12 @@ import AiAssistant from "@/components/dashboard/ai-assistant";
 import { Charts } from "@/components/dashboard/charts";
 import KpiCard from "@/components/dashboard/kpi-card";
 import MapView from "@/components/dashboard/map-view";
+import PriorityHandling from "@/components/dashboard/priority-handling";
+import MobileDashboard from "@/components/dashboard/mobile-dashboard";
+import RoleSelector, { UserRole } from "@/components/dashboard/role-selector";
+import RoleDashboards from "@/components/dashboard/role-dashboards";
 import { Button } from "@/components/ui/button";
-import { Boxes, Download, Send, Share2, Truck, Undo2, Workflow } from "lucide-react";
+import { Boxes, Download, Send, Share2, Truck, Undo2, Workflow, Smartphone, Monitor } from "lucide-react";
 import { apiService, KPIResponse } from "@/lib/api";
 import { mockKPIData } from "@/lib/mock-data";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
@@ -14,6 +18,8 @@ import { useRef } from "react";
 export default function Dashboard() {
   const [kpis, setKpis] = useState<KPIResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [currentRole, setCurrentRole] = useState<UserRole>('General');
+  const [viewMode, setViewMode] = useState<'desktop' | 'mobile'>('desktop');
 
   useEffect(() => {
     const fetchKPIs = async () => {
@@ -37,52 +43,90 @@ export default function Dashboard() {
   const criticalItems = kpis ? Math.floor(kpis.low_stock_items * 0.3) : 0; // 30% of low stock items are critical
   const onTimeShipments = kpis ? kpis.total_shipments - kpis.delayed_shipments : 0;
 
+  // Mobile view
+  if (viewMode === 'mobile') {
+    return <MobileDashboard />;
+  }
+
   return (
     <div className="flex flex-col gap-6">
-      <AiAssistant />
-      
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-        <KpiCard
-          title="Total Shipments"
-          value={loading ? "Loading..." : kpis?.total_shipments.toLocaleString() || "0"}
-          subtext={`${onTimeShipments.toLocaleString()} on time`}
-          note={kpis && delayRate > 50 ? "High delay rate" : undefined}
-          glowColor="cyan"
-          trend={kpis && delayRate > 50 ? "down" : "neutral"}
-        >
-            <Send />
-        </KpiCard>
-        <KpiCard
-          title="Delayed Shipments"
-          value={loading ? "Loading..." : kpis?.delayed_shipments.toLocaleString() || "0"}
-          subtext={`${delayRate.toFixed(1)}% of total`}
-          note={kpis && delayRate > 50 ? "Critical" : delayRate > 20 ? "Warning" : undefined}
-          glowColor="red"
-          trend="down"
-        >
-            <Truck />
-        </KpiCard>
-        <KpiCard
-          title="Low Stock Items"
-          value={loading ? "Loading..." : kpis?.low_stock_items.toLocaleString() || "0"}
-          subtext={`${criticalItems} critical`}
-          note={kpis && kpis.low_stock_items > 100 ? "High risk" : undefined}
-          glowColor="yellow"
-          trend={kpis && kpis.low_stock_items > 100 ? "down" : "neutral"}
-        >
-            <Boxes />
-        </KpiCard>
-        <KpiCard
-          title="Return Rate"
-          value={loading ? "Loading..." : "12.0%"}
-          subtext={"120 returns out of 1000 shipments"}
-          note={kpis && 12.0 > 20 ? "Above threshold" : undefined}
-          glowColor="orange"
-          trend={kpis && 12.0 > 20 ? "down" : "neutral"}
-        >
-            <Undo2 />
-        </KpiCard>
+      {/* View Mode Toggle */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Button
+            variant={viewMode === 'desktop' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setViewMode('desktop')}
+            className="flex items-center gap-2"
+          >
+            <Monitor className="w-4 h-4" />
+            Desktop
+          </Button>
+          <Button
+            variant={viewMode === 'mobile' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setViewMode('mobile')}
+            className="flex items-center gap-2"
+          >
+            <Smartphone className="w-4 h-4" />
+            Mobile
+          </Button>
+        </div>
       </div>
+
+      <AiAssistant />
+      {/* Role-based Dashboard Content */}
+      {currentRole !== 'General' ? (
+        <RoleDashboards role={currentRole} />
+      ) : (
+        <>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+            <KpiCard
+              title="Total Shipments"
+              value={loading ? "Loading..." : kpis?.total_shipments.toLocaleString() || "0"}
+              subtext={`${onTimeShipments.toLocaleString()} on time`}
+              note={kpis && delayRate > 50 ? "High delay rate" : undefined}
+              glowColor="cyan"
+              trend={kpis && delayRate > 50 ? "down" : "neutral"}
+            >
+                <Send />
+            </KpiCard>
+            <KpiCard
+              title="Delayed Shipments"
+              value={loading ? "Loading..." : kpis?.delayed_shipments.toLocaleString() || "0"}
+              subtext={`${delayRate.toFixed(1)}% of total`}
+              note={kpis && delayRate > 50 ? "Critical" : delayRate > 20 ? "Warning" : undefined}
+              glowColor="red"
+              trend="down"
+            >
+                <Truck />
+            </KpiCard>
+            <KpiCard
+              title="Low Stock Items"
+              value={loading ? "Loading..." : kpis?.low_stock_items.toLocaleString() || "0"}
+              subtext={`${criticalItems} critical`}
+              note={kpis && kpis.low_stock_items > 100 ? "High risk" : undefined}
+              glowColor="yellow"
+              trend={kpis && kpis.low_stock_items > 100 ? "down" : "neutral"}
+            >
+                <Boxes />
+            </KpiCard>
+            <KpiCard
+              title="Return Rate"
+              value={loading ? "Loading..." : "12.0%"}
+              subtext={"120 returns out of 1000 shipments"}
+              note={kpis && 12.0 > 20 ? "Above threshold" : undefined}
+              glowColor="orange"
+              trend={kpis && 12.0 > 20 ? "down" : "neutral"}
+            >
+                <Undo2 />
+            </KpiCard>
+          </div>
+
+          {/* Priority Handling for General Dashboard */}
+          <PriorityHandling />
+        </>
+      )}
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-5">
         <div className="xl:col-span-3">
