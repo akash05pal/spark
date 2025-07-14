@@ -64,7 +64,8 @@ const chartConfig = {
 
   // Custom bar shape: vertical rectangle with sharp corners, with a white dot at the top
   const PillBar = (props: any) => {
-    const { x, y, width, height, isMax } = props;
+    const { x, y, width, height, payload } = props;
+    const isMax = payload?.performance === maxPerformance;
     return (
       <g>
         <rect
@@ -119,13 +120,11 @@ const chartConfig = {
                 />
                 <Bar
                   dataKey="performance"
-                  barSize={44}
-                  shape={props => 
+                  shape={(props: import('recharts').BarProps) => 
                     <PillBar
                       {...props}
-                      isMax={props.payload.performance === maxPerformance}
                     /> 
-                  } 
+                  }
                 />
               </BarChart>
             </ResponsiveContainer>

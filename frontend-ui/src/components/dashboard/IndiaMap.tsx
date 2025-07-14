@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef } from "react";
 import { apiService } from "@/lib/api";
 import { mockMapData } from "@/lib/mock-data";
+import "leaflet/dist/leaflet.css";
 
 const INDIA_REGIONS = [
   { name: "North", lat: 28.7, lon: 77.1 },
@@ -42,7 +43,6 @@ export default function IndiaMap() {
       try {
         const [L] = await Promise.all([
           import("leaflet"),
-          import("leaflet/dist/leaflet.css"),
         ]);
         if (!isMounted || !mapRef.current || mapInstanceRef.current) return;
         const map = L.map(mapRef.current, {

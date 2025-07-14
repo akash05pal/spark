@@ -23,14 +23,14 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { href: '#', icon: LayoutDashboard, label: 'Dashboard' },
+  { href: '/', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '#', icon: BrainCircuit, label: 'AI-Powered Insights' },
-  { href: '#', icon: Boxes, label: 'Inventory' },
-  { href: '#', icon: Undo2, label: 'Returns' },
-  { href: '#', icon: Truck, label: 'Logistics' },
-  { href: '#', icon: Handshake, label: 'Suppliers' },
+  { href: '/reports/inventory', icon: Boxes, label: 'Inventory' },
+  { href: '/reports/returns', icon: Undo2, label: 'Returns' },
+  { href: '/reports/logistics', icon: Truck, label: 'Logistics' },
+  { href: '/reports/suppliers', icon: Handshake, label: 'Suppliers' },
   { href: '#', icon: TrendingUp, label: 'Trends' },
-  { href: '#', icon: Map, label: 'Map View' },
+  { href: '/map-view', icon: Map, label: 'Map View' },
   { href: '#', icon: Share2, label: 'Knowledge Graph' },
   { href: '#', icon: Download, label: 'Download Reports' },
 ];
