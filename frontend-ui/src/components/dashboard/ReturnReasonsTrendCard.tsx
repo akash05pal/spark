@@ -63,7 +63,12 @@ export default function ReturnReasonsTrendCard() {
                 contentStyle={{ background: "#232946", border: "none", borderRadius: 12, color: "#fff" }}
                 labelStyle={{ color: "#a5b4fc", fontWeight: 600 }}
                 itemStyle={{ fontWeight: 500 }}
-                formatter={(value, name) => [value, name.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())]}
+                formatter={(value, name) => [
+                  value,
+                  typeof name === "string"
+                    ? name.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())
+                    : name
+                ]}
               />
               <Line type="monotone" dataKey="damaged" stroke={COLORS.damaged} strokeWidth={3} dot={{ r: 5 }} activeDot={{ r: 7 }} fillOpacity={1} fill="url(#areaDamaged)" />
               <Line type="monotone" dataKey="wrong_item" stroke={COLORS.wrong_item} strokeWidth={3} dot={{ r: 5 }} activeDot={{ r: 7 }} fillOpacity={1} fill="url(#areaWrong)" />

@@ -1,13 +1,14 @@
 
 'use client';
-import { useState } from 'react';
+import React,{ useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { BrainCircuit, Sparkles, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import Lottie from "lottie-react";
-import animationData from "./ai-animation.json";
+// import Lottie from "lottie-react";
+import AnimatedBlob from './AnimatedBlob';
+// import animationData from "./ai-animation.json";
 import { apiService } from '@/lib/api';
 import { HtmlRenderer } from '@/components/ui/html-renderer';
 
@@ -73,12 +74,7 @@ export default function AiAssistant() {
                 >
                 {isProcessing ? (
                     <>
-                        <img
-                            src="/sparkle.png"
-                            alt="Processing"
-                            className="w-5 h-5 mr-2 animate-glow"
-                            style={{ display: 'inline-block', verticalAlign: 'middle' }}
-                        />
+                       
                         Processing...
                     </>
                 ) : (
@@ -91,14 +87,14 @@ export default function AiAssistant() {
             </form>
           </div>
           <div className="relative hidden md:flex items-center justify-center h-48">
-             <div className={cn("absolute transition-all duration-500", isProcessing ? 'scale-110 opacity-100' : 'scale-100 opacity-70')}>
-                <Lottie animationData={animationData} loop={true} style={{ width: 200, height: 200 }} />
-                {isProcessing && (
-                    <div className="absolute inset-0 bg-purple-500/20 rounded-full animate-ping"></div>
-                )}
+             <AnimatedBlob 
+              isProcessing={isProcessing} 
+              className={cn("transition-all duration-500", isProcessing ? 'scale-110' : 'scale-100')}
+              />
+                
             </div>
           </div>
-        </div>
+        
 
         {showResultPanel && (
             <div className='mt-6'>
