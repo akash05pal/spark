@@ -9,6 +9,7 @@ from rag.rag_pipeline import rag_query
 import pandas as pd
 import json
 from flask import Flask, jsonify, send_file
+from datetime import datetime, timedelta
 
 # Load environment variables
 load_dotenv()
@@ -53,6 +54,19 @@ class ChartData(BaseModel):
 
 class MapData(BaseModel):
     regions: List[Dict[str, Any]]
+
+class ShipmentData(BaseModel):
+    shipment_id: str
+    shipment_type: str
+    created_at: str
+    status: str
+    priority: str
+    sla_status: str
+    sla_hours_remaining: Optional[float]
+
+class PriorityResponse(BaseModel):
+    shipments: List[ShipmentData]
+    summary: Dict[str, Any]
 
 @app.get("/")
 async def root():
@@ -254,6 +268,69 @@ async def get_returns_data():
         return {"returns": returns}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch returns data: {str(e)}")
+
+@app.get("/api/priority", response_model=PriorityResponse)
+async def get_priority_data():
+    """Get priority shipments with SLA tracking"""
+    try:
+        # Generate mock shipment data with priority and SLA tracking
+        current_time = datetime.now()
+        
+        shipments = []
+        
+        # Forward shipments (High Priority)
+        for i in range(1, 6):
+            created_at = current_time - timedelta(hours=i*2)
+            shipments.append({
+                "shipment_id": f"FWD-{i:04d}",
+                "shipment_type": "forward",
+                "created_at": created_at.isoformat(),
+                "status": "in-transit" if i % 2 == 0 else "pending",
+                "priority": "high",
+                "sla_status": "normal",
+                "sla_hours_remaining": None
+            })
+        
+        # Return shipments (Medium Priority with SLA)
+        for i in range(1, 8):
+            created_at = current_time - timedelta(hours=i*12)  # Some older returns
+            hours_elapsed = (current_time - created_at).total_seconds() / 3600
+            sla_hours_remaining = max(0, 72 - hours_elapsed)
+            
+            if hours_elapsed > 72:
+                sla_status = "breached"
+            elif hours_elapsed > 60:
+                sla_status = "nearing"
+            else:
+                sla_status = "normal"
+            
+            shipments.append({
+                "shipment_id": f"RET-{i:04d}",
+                "shipment_type": "return",
+                "created_at": created_at.isoformat(),
+                "status": "in-progress",
+                "priority": "medium",
+                "sla_status": sla_status,
+                "sla_hours_remaining": sla_hours_remaining
+            })
+        
+        # Calculate summary
+        high_priority = len([s for s in shipments if s["priority"] == "high"])
+        medium_priority = len([s for s in shipments if s["priority"] == "medium"])
+        sla_breached = len([s for s in shipments if s["sla_status"] == "breached"])
+        sla_nearing = len([s for s in shipments if s["sla_status"] == "nearing"])
+        
+        summary = {
+            "total_shipments": len(shipments),
+            "high_priority": high_priority,
+            "medium_priority": medium_priority,
+            "sla_breached": sla_breached,
+            "sla_nearing": sla_nearing
+        }
+        
+        return PriorityResponse(shipments=shipments, summary=summary)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch priority data: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn

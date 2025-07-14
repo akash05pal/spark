@@ -6,8 +6,14 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Bell, Menu } from 'lucide-react';
 import Sidebar from './sidebar';
 import LiveClock from './live-clock';
+import RoleSelector, { UserRole } from './role-selector';
 
-export default function Header() {
+interface HeaderProps {
+  currentRole: UserRole;
+  onRoleChange: (role: UserRole) => void;
+}
+
+export default function Header({ currentRole, onRoleChange }: HeaderProps) {
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b border-slate-800 bg-[#0A0F26]/80 px-4 backdrop-blur-sm sm:px-6">
       <div className="flex items-center gap-4">
@@ -31,6 +37,10 @@ export default function Header() {
       </div>
 
       <div className="flex flex-1 justify-end items-center gap-4">
+        {/* Role Selector to the left of date/time */}
+        <div className="hidden md:block">
+          <RoleSelector currentRole={currentRole} onRoleChange={onRoleChange} />
+        </div>
         <LiveClock />
         <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-800">
             <Bell className="h-5 w-5 text-slate-400" />
